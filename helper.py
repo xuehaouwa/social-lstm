@@ -12,23 +12,24 @@ from olstm_model import OLSTMModel
 from vlstm_model import VLSTMModel
 
 
-
-#one time set dictionary for a exist key
+# one time set dictionary for a exist key
 class WriteOnceDict(dict):
     def __setitem__(self, key, value):
         if not key in self:
             super(WriteOnceDict, self).__setitem__(key, value)
 
-#(1 = social lstm, 2 = obstacle lstm, 3 = vanilla lstm)
+
+# (1 = social lstm, 2 = obstacle lstm, 3 = vanilla lstm)
 def get_method_name(index):
     # return method name given index
     return {
-        1 : 'SOCIALLSTM',
-        2 : 'OBSTACLELSTM',
-        3 : 'VANILLALSTM'
+        1: 'SOCIALLSTM',
+        2: 'OBSTACLELSTM',
+        3: 'VANILLALSTM'
     }.get(index, 'SOCIALLSTM')
 
-def get_model(index, arguments, infer = False):
+
+def get_model(index, arguments, infer=False):
     # return a model given index and arguments
     if index == 1:
         return SocialModel(arguments, infer)
@@ -38,6 +39,7 @@ def get_model(index, arguments, infer = False):
         return VLSTMModel(arguments, infer)
     else:
         return SocialModel(arguments, infer)
+
 
 def getCoef(outputs):
     '''
@@ -80,8 +82,8 @@ def sample_gaussian_2d(mux, muy, sx, sy, corr, nodesPresent, look_up):
         if node not in converted_node_present:
             continue
         mean = [o_mux[node], o_muy[node]]
-        cov = [[o_sx[node]*o_sx[node], o_corr[node]*o_sx[node]*o_sy[node]], 
-                [o_corr[node]*o_sx[node]*o_sy[node], o_sy[node]*o_sy[node]]]
+        cov = [[o_sx[node] * o_sx[node], o_corr[node] * o_sx[node] * o_sy[node]],
+               [o_corr[node] * o_sx[node] * o_sy[node], o_sy[node] * o_sy[node]]]
 
         mean = np.array(mean, dtype='float')
         cov = np.array(cov, dtype='float')
@@ -90,6 +92,7 @@ def sample_gaussian_2d(mux, muy, sx, sy, corr, nodesPresent, look_up):
         next_y[node] = next_values[0][1]
 
     return next_x, next_y
+
 
 def get_mean_error(ret_nodes, nodes, assumedNodesPresent, trueNodesPresent, using_cuda, look_up):
     '''
@@ -127,7 +130,6 @@ def get_mean_error(ret_nodes, nodes, assumedNodesPresent, trueNodesPresent, usin
                 continue
 
             nodeID = look_up[nodeID]
-
 
             pred_pos = ret_nodes[tstep, nodeID, :]
             true_pos = nodes[tstep, nodeID, :]
@@ -172,23 +174,22 @@ def get_final_error(ret_nodes, nodes, assumedNodesPresent, trueNodesPresent, loo
     for nodeID in assumedNodesPresent[tstep]:
         nodeID = int(nodeID)
 
-
         if nodeID not in trueNodesPresent[tstep]:
             continue
 
         nodeID = look_up[nodeID]
 
-        
         pred_pos = ret_nodes[tstep, nodeID, :]
         true_pos = nodes[tstep, nodeID, :]
-        
+
         error += torch.norm(pred_pos - true_pos, p=2)
         counter += 1
-        
+
     if counter != 0:
         error = error / counter
-            
+
     return error
+
 
 def Gaussian2DLikelihoodInference(outputs, targets, nodesPresent, pred_length, look_up):
     '''
@@ -211,11 +212,11 @@ def Gaussian2DLikelihoodInference(outputs, targets, nodesPresent, pred_length, l
     normy = targets[:, :, 1] - muy
     sxsy = sx * sy
 
-    z = (normx/sx)**2 + (normy/sy)**2 - 2*((corr*normx*normy)/sxsy)
-    negRho = 1 - corr**2
+    z = (normx / sx) ** 2 + (normy / sy) ** 2 - 2 * ((corr * normx * normy) / sxsy)
+    negRho = 1 - corr ** 2
 
     # Numerator
-    result = torch.exp(-z/(2*negRho))
+    result = torch.exp(-z / (2 * negRho))
     # Normalization factor
     denom = 2 * np.pi * (sxsy * torch.sqrt(negRho))
 
@@ -226,7 +227,7 @@ def Gaussian2DLikelihoodInference(outputs, targets, nodesPresent, pred_length, l
     epsilon = 1e-20
 
     result = -torch.log(torch.clamp(result, min=epsilon))
-    #print(result)
+    # print(result)
 
     loss = 0
     counter = 0
@@ -236,7 +237,6 @@ def Gaussian2DLikelihoodInference(outputs, targets, nodesPresent, pred_length, l
         nodeIDs = [int(nodeID) for nodeID in nodeIDs]
 
         for nodeID in nodeIDs:
-
             nodeID = look_up[nodeID]
             loss = loss + result[framenum, nodeID]
             counter = counter + 1
@@ -266,11 +266,11 @@ def Gaussian2DLikelihood(outputs, targets, nodesPresent, look_up):
     normy = targets[:, :, 1] - muy
     sxsy = sx * sy
 
-    z = (normx/sx)**2 + (normy/sy)**2 - 2*((corr*normx*normy)/sxsy)
-    negRho = 1 - corr**2
+    z = (normx / sx) ** 2 + (normy / sy) ** 2 - 2 * ((corr * normx * normy) / sxsy)
+    negRho = 1 - corr ** 2
 
     # Numerator
-    result = torch.exp(-z/(2*negRho))
+    result = torch.exp(-z / (2 * negRho))
     # Normalization factor
     denom = 2 * np.pi * (sxsy * torch.sqrt(negRho))
 
@@ -300,16 +300,19 @@ def Gaussian2DLikelihood(outputs, targets, nodesPresent, look_up):
     else:
         return loss
 
+
 ##################### Data related methods ######################
 
 def remove_file_extention(file_name):
     # remove file extension (.txt) given filename
     return file_name.split('.')[0]
 
+
 def add_file_extention(file_name, extention):
     # add file extension (.txt) given filename
 
     return file_name + '.' + extention
+
 
 def clear_folder(path):
     # remove all files in the folder
@@ -317,7 +320,8 @@ def clear_folder(path):
         shutil.rmtree(path)
         print("Folder succesfully removed: ", path)
     else:
-        print("No such path: ",path)
+        print("No such path: ", path)
+
 
 def delete_file(path, file_name_list):
     # delete given file list
@@ -327,10 +331,11 @@ def delete_file(path, file_name_list):
             if os.path.isfile(file_path):
                 os.remove(file_path)
                 print("File succesfully deleted: ", file_path)
-            else:    ## Show an error ##
-                print("Error: %s file not found" % file_path)        
+            else:  ## Show an error ##
+                print("Error: %s file not found" % file_path)
         except OSError as e:  ## if failed, report it back to the user ##
-            print ("Error: %s - %s." % (e.filename,e.strerror))
+            print("Error: %s - %s." % (e.filename, e.strerror))
+
 
 def get_all_file_names(path):
     # return all file names given directory
@@ -340,6 +345,7 @@ def get_all_file_names(path):
         break
     return files
 
+
 def create_directories(base_folder_path, folder_list):
     # create folders using a folder list and path
     for folder_name in folder_list:
@@ -347,13 +353,15 @@ def create_directories(base_folder_path, folder_list):
         if not os.path.exists(directory):
             os.makedirs(directory)
 
+
 def unique_list(l):
-  # get unique elements from list
-  x = []
-  for a in l:
-    if a not in x:
-      x.append(a)
-  return x
+    # get unique elements from list
+    x = []
+    for a in l:
+        if a not in x:
+            x.append(a)
+    return x
+
 
 def angle_between(p1, p2):
     # return angle between two points
@@ -361,25 +369,28 @@ def angle_between(p1, p2):
     ang2 = np.arctan2(*p2[::-1])
     return ((ang1 - ang2) % (2 * np.pi))
 
+
 def vectorize_seq(x_seq, PedsList_seq, lookup_seq):
-    #substract first frame value to all frames for a ped.Therefore, convert absolute pos. to relative pos.
+    # substract first frame value to all frames for a ped.Therefore, convert absolute pos. to relative pos.
     first_values_dict = WriteOnceDict()
     vectorized_x_seq = x_seq.clone()
     for ind, frame in enumerate(x_seq):
         for ped in PedsList_seq[ind]:
             first_values_dict[ped] = frame[lookup_seq[ped], 0:2]
-            vectorized_x_seq[ind, lookup_seq[ped], 0:2]  = frame[lookup_seq[ped], 0:2] - first_values_dict[ped][0:2]
+            vectorized_x_seq[ind, lookup_seq[ped], 0:2] = frame[lookup_seq[ped], 0:2] - first_values_dict[ped][0:2]
 
     return vectorized_x_seq, first_values_dict
+
 
 def translate(x_seq, PedsList_seq, lookup_seq, value):
     # translate al trajectories given x and y values
     vectorized_x_seq = x_seq.clone()
     for ind, frame in enumerate(x_seq):
         for ped in PedsList_seq[ind]:
-            vectorized_x_seq[ind, lookup_seq[ped], 0:2]  = frame[lookup_seq[ped], 0:2] - value[0:2]
+            vectorized_x_seq[ind, lookup_seq[ped], 0:2] = frame[lookup_seq[ped], 0:2] - value[0:2]
 
     return vectorized_x_seq
+
 
 def revert_seq(x_seq, PedsList_seq, lookup_seq, first_values_dict):
     # convert velocity array to absolute position array
@@ -392,29 +403,31 @@ def revert_seq(x_seq, PedsList_seq, lookup_seq, first_values_dict):
 
 
 def rotate(origin, point, angle):
-        """
+    """
         Rotate a point counterclockwise by a given angle around a given origin.
 
         The angle should be given in radians.
         """
-        ox, oy = origin
-        px, py = point
+    ox, oy = origin
+    px, py = point
 
-        qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
-        qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
-        #return torch.cat([qx, qy])
-        return [qx, qy]
+    qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
+    qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
+    # return torch.cat([qx, qy])
+    return [qx, qy]
+
 
 def time_lr_scheduler(optimizer, epoch, lr_decay=0.5, lr_decay_epoch=10):
     """Decay learning rate by a factor of lr_decay every lr_decay_epoch epochs"""
     if epoch % lr_decay_epoch:
         return optimizer
-    
+
     print("Optimizer learning rate has been decreased.")
 
     for param_group in optimizer.param_groups:
         param_group['lr'] *= (1. / (1. + lr_decay * epoch))
     return optimizer
+
 
 def sample_validation_data(x_seq, Pedlist, grid, args, net, look_up, num_pedlist, dataloader):
     '''
@@ -446,7 +459,6 @@ def sample_validation_data(x_seq, Pedlist, grid, args, net, look_up, num_pedlist
         else:
             cell_states = None
 
-
         ret_x_seq = Variable(torch.zeros(args.seq_length, numx_seq, 2))
 
         # Initialize the return data structure
@@ -456,21 +468,24 @@ def sample_validation_data(x_seq, Pedlist, grid, args, net, look_up, num_pedlist
         ret_x_seq[0] = x_seq[0]
 
         # For the observed part of the trajectory
-        for tstep in range(args.seq_length -1):
+        for tstep in range(args.seq_length - 1):
             loss = 0
             # Do a forward prop
-            out_, hidden_states, cell_states = net(x_seq[tstep].view(1, numx_seq, 2), [grid[tstep]], hidden_states, cell_states, [Pedlist[tstep]], [num_pedlist[tstep]], dataloader, look_up)
+            out_, hidden_states, cell_states = net(x_seq[tstep].view(1, numx_seq, 2), [grid[tstep]], hidden_states,
+                                                   cell_states, [Pedlist[tstep]], [num_pedlist[tstep]], dataloader,
+                                                   look_up)
             # loss_obs = Gaussian2DLikelihood(out_obs, x_seq[tstep+1].view(1, numx_seq, 2), [Pedlist[tstep+1]])
 
             # Extract the mean, std and corr of the bivariate Gaussian
             mux, muy, sx, sy, corr = getCoef(out_)
             # Sample from the bivariate Gaussian
-            next_x, next_y = sample_gaussian_2d(mux.data, muy.data, sx.data, sy.data, corr.data, Pedlist[tstep], look_up)
+            next_x, next_y = sample_gaussian_2d(mux.data, muy.data, sx.data, sy.data, corr.data, Pedlist[tstep],
+                                                look_up)
             ret_x_seq[tstep + 1, :, 0] = next_x
             ret_x_seq[tstep + 1, :, 1] = next_y
-            loss = Gaussian2DLikelihood(out_[0].view(1, out_.size()[1], out_.size()[2]), x_seq[tstep].view(1, numx_seq, 2), [Pedlist[tstep]], look_up)
+            loss = Gaussian2DLikelihood(out_[0].view(1, out_.size()[1], out_.size()[2]),
+                                        x_seq[tstep].view(1, numx_seq, 2), [Pedlist[tstep]], look_up)
             total_loss += loss
-
 
     return ret_x_seq, total_loss / args.seq_length
 
@@ -503,7 +518,6 @@ def sample_validation_data_vanilla(x_seq, Pedlist, args, net, look_up, num_pedli
     else:
         cell_states = None
 
-
     ret_x_seq = Variable(torch.zeros(args.seq_length, numx_seq, 2), volatile=True)
 
     # Initialize the return data structure
@@ -513,10 +527,11 @@ def sample_validation_data_vanilla(x_seq, Pedlist, args, net, look_up, num_pedli
     ret_x_seq[0] = x_seq[0]
 
     # For the observed part of the trajectory
-    for tstep in range(args.seq_length -1):
+    for tstep in range(args.seq_length - 1):
         loss = 0
         # Do a forward prop
-        out_, hidden_states, cell_states = net(x_seq[tstep].view(1, numx_seq, 2), hidden_states, cell_states, [Pedlist[tstep]], [num_pedlist[tstep]], dataloader, look_up)
+        out_, hidden_states, cell_states = net(x_seq[tstep].view(1, numx_seq, 2), hidden_states, cell_states,
+                                               [Pedlist[tstep]], [num_pedlist[tstep]], dataloader, look_up)
         # loss_obs = Gaussian2DLikelihood(out_obs, x_seq[tstep+1].view(1, numx_seq, 2), [Pedlist[tstep+1]])
 
         # Extract the mean, std and corr of the bivariate Gaussian
@@ -525,9 +540,9 @@ def sample_validation_data_vanilla(x_seq, Pedlist, args, net, look_up, num_pedli
         next_x, next_y = sample_gaussian_2d(mux.data, muy.data, sx.data, sy.data, corr.data, Pedlist[tstep], look_up)
         ret_x_seq[tstep + 1, :, 0] = next_x
         ret_x_seq[tstep + 1, :, 1] = next_y
-        loss = Gaussian2DLikelihood(out_[0].view(1, out_.size()[1], out_.size()[2]), x_seq[tstep].view(1, numx_seq, 2), [Pedlist[tstep]], look_up)
+        loss = Gaussian2DLikelihood(out_[0].view(1, out_.size()[1], out_.size()[2]), x_seq[tstep].view(1, numx_seq, 2),
+                                    [Pedlist[tstep]], look_up)
         total_loss += loss
-
 
     return ret_x_seq, total_loss / args.seq_length
 

@@ -1,0 +1,4 @@
+Training epoch: 0 loss: Variable containing:
+ 1.4297
+[torch.FloatTensor of size 1]
+
