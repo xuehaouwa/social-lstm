@@ -307,7 +307,7 @@ def train(args):
                 loss.backward()
 
                 # Clip gradients
-                torch.nn.utils.clip_grad_norm(net.parameters(), args.grad_clip)
+                torch.nn.utils.clip_grad_norm_(net.parameters(), args.grad_clip)
 
                 # Update parameters
                 optimizer.step()
