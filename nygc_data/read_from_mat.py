@@ -8,6 +8,8 @@ from scipy import io
 import numpy as np
 
 
+LEN_17_NUM = 14662
+TRAIN_NUM = int(LEN_17_NUM * 0.8)
 # mat_data = io.loadmat('trajectoriesNew.mat')
 # print(type(mat_data))
 # print(mat_data.keys())
@@ -53,19 +55,23 @@ def write_to_file(trajectories, out_file):
     counter = 0
     with open(out_file, "w") as f:
         for t in trajectories:
-            if len(t) > (9+16) * 10:
+            if len(t) > (9+8) * 10 and counter < TRAIN_NUM:
                 counter += 1
+                len_counter = 0
                 for one_time in t:
-                    if one_time[-1] % 10 == 1:
+                    if one_time[-1] % 10 == 1 and len_counter < 9+8:
+                        len_counter += 1
                         f.write(f"{one_time[-1]} {counter} {one_time[0]} {one_time[1]}" + "\n")
 
     f.close()
+    print(counter)
+    print(counter == TRAIN_NUM)
 
 
 traj = mat_to_trajectories('trajectoriesNew.mat')
 print(len(traj))
 print(traj[1])
-write_to_file(traj, out_file="cs_test.txt")
+write_to_file(traj, out_file="cs_train.txt")
 # data = process(mat_to_trajectories('trajectoriesNew.mat'))
 # print(np.shape(data))
 # np.save('data_NYGC_p16_time.npy', data)
