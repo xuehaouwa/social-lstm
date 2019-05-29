@@ -24,21 +24,30 @@ class DataLoader():
         forcePreProcess : Flag to forcefully preprocess the data again from csv files
         '''
         # base test files
-        base_test_dataset = ['/data/test/biwi/biwi_eth.txt',
-                             '/data/test/crowds/crowds_zara01.txt',
-                             '/data/test/crowds/uni_examples.txt',
-                             '/data/test/stanford/coupa_0.txt',
-                             '/data/test/stanford/coupa_1.txt', '/data/test/stanford/gates_2.txt',
-                             '/data/test/stanford/hyang_0.txt', '/data/test/stanford/hyang_1.txt',
-                             '/data/test/stanford/hyang_3.txt', '/data/test/stanford/hyang_8.txt',
-                             '/data/test/stanford/little_0.txt', '/data/test/stanford/little_1.txt',
-                             '/data/test/stanford/little_2.txt', '/data/test/stanford/little_3.txt',
-                             '/data/test/stanford/nexus_5.txt', '/data/test/stanford/nexus_6.txt',
-                             '/data/test/stanford/quad_0.txt', '/data/test/stanford/quad_1.txt',
-                             '/data/test/stanford/quad_2.txt', '/data/test/stanford/quad_3.txt'
-                             ]
+        # base_test_dataset = ['/data/test/biwi/biwi_eth.txt',
+        #                      '/data/test/crowds/crowds_zara01.txt',
+        #                      '/data/test/crowds/uni_examples.txt',
+        #                      '/data/test/stanford/coupa_0.txt',
+        #                      '/data/test/stanford/coupa_1.txt', '/data/test/stanford/gates_2.txt',
+        #                      '/data/test/stanford/hyang_0.txt', '/data/test/stanford/hyang_1.txt',
+        #                      '/data/test/stanford/hyang_3.txt', '/data/test/stanford/hyang_8.txt',
+        #                      '/data/test/stanford/little_0.txt', '/data/test/stanford/little_1.txt',
+        #                      '/data/test/stanford/little_2.txt', '/data/test/stanford/little_3.txt',
+        #                      '/data/test/stanford/nexus_5.txt', '/data/test/stanford/nexus_6.txt',
+        #                      '/data/test/stanford/quad_0.txt', '/data/test/stanford/quad_1.txt',
+        #                      '/data/test/stanford/quad_2.txt', '/data/test/stanford/quad_3.txt'
+        #                      ]
+        base_test_dataset = ['/nygc_data/test/nygc/cs_test.txt']
         # base train files
-        base_train_dataset = ['/data/train/biwi/biwi_hotel.txt',
+        # base_train_dataset = ['/data/train/biwi/biwi_hotel.txt',
+        #                       # '/data/train/crowds/arxiepiskopi1.txt','/data/train/crowds/crowds_zara02.txt',
+        #                       # '/data/train/crowds/crowds_zara03.txt','/data/train/crowds/students001.txt','/data/train/crowds/students003.txt',
+        #                       # '/data/train/mot/PETS09-S2L1.txt',
+        #                       # '/data/train/stanford/bookstore_0.txt','/data/train/stanford/bookstore_1.txt','/data/train/stanford/bookstore_2.txt','/data/train/stanford/bookstore_3.txt','/data/train/stanford/coupa_3.txt','/data/train/stanford/deathCircle_0.txt','/data/train/stanford/deathCircle_1.txt','/data/train/stanford/deathCircle_2.txt','/data/train/stanford/deathCircle_3.txt',
+        #                       # '/data/train/stanford/deathCircle_4.txt','/data/train/stanford/gates_0.txt','/data/train/stanford/gates_1.txt','/data/train/stanford/gates_3.txt','/data/train/stanford/gates_4.txt','/data/train/stanford/gates_5.txt','/data/train/stanford/gates_6.txt','/data/train/stanford/gates_7.txt','/data/train/stanford/gates_8.txt','/data/train/stanford/hyang_4.txt',
+        #                       # '/data/train/stanford/hyang_5.txt','/data/train/stanford/hyang_6.txt','/data/train/stanford/hyang_9.txt','/data/train/stanford/nexus_0.txt','/data/train/stanford/nexus_1.txt','/data/train/stanford/nexus_2.txt','/data/train/stanford/nexus_3.txt','/data/train/stanford/nexus_4.txt','/data/train/stanford/nexus_7.txt','/data/train/stanford/nexus_8.txt','/data/train/stanford/nexus_9.txt'
+        #                       ]
+        base_train_dataset = ['/nygc_data/train/nygc/cs_train.txt',
                               # '/data/train/crowds/arxiepiskopi1.txt','/data/train/crowds/crowds_zara02.txt',
                               # '/data/train/crowds/crowds_zara03.txt','/data/train/crowds/students001.txt','/data/train/crowds/students003.txt',
                               # '/data/train/mot/PETS09-S2L1.txt',
@@ -47,12 +56,12 @@ class DataLoader():
                               # '/data/train/stanford/hyang_5.txt','/data/train/stanford/hyang_6.txt','/data/train/stanford/hyang_9.txt','/data/train/stanford/nexus_0.txt','/data/train/stanford/nexus_1.txt','/data/train/stanford/nexus_2.txt','/data/train/stanford/nexus_3.txt','/data/train/stanford/nexus_4.txt','/data/train/stanford/nexus_7.txt','/data/train/stanford/nexus_8.txt','/data/train/stanford/nexus_9.txt'
                               ]
         # dimensions of each file set
-        self.dataset_dimensions = {'biwi': [720, 576], 'crowds': [720, 576], 'stanford': [595, 326], 'mot': [768, 576]}
+        self.dataset_dimensions = {'biwi': [720, 576], 'crowds': [720, 576], 'stanford': [595, 326], 'mot': [768, 576], "nygc": [720, 480]}
 
         # List of data directories where raw data resides
-        self.base_train_path = 'data/train/'
-        self.base_test_path = 'data/test/'
-        self.base_validation_path = 'data/validation/'
+        self.base_train_path = 'nygc_data/train/'
+        self.base_test_path = 'nygc_data/test/'
+        self.base_validation_path = 'nygc_data/validation/'
 
         # check infer flag, if true choose test directory as base directory
         if infer is False:

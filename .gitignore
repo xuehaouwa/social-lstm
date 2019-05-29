@@ -11,3 +11,11 @@ result/
 nygc_data/cs_test\.txt
 
 nygc_data/cd_train\.txt
+
+\.DS_Store
+
+__pycache__/
+
+nygc_data/validation/trajectories_val\.cpkl
+
+nygc_data/train/trajectories_train\.cpkl

@@ -10,6 +10,7 @@ import numpy as np
 
 LEN_17_NUM = 14662
 TRAIN_NUM = int(LEN_17_NUM * 0.8)
+VAL_NUM = int((LEN_17_NUM - TRAIN_NUM) / 2)
 # mat_data = io.loadmat('trajectoriesNew.mat')
 # print(type(mat_data))
 # print(mat_data.keys())
@@ -68,10 +69,46 @@ def write_to_file(trajectories, out_file):
     print(counter == TRAIN_NUM)
 
 
+def write_val_file(trajectories, val_file):
+    counter = 0
+    with open(val_file, "w") as f:
+        for t in trajectories:
+            if len(t) > (9+8) * 10:
+                counter += 1
+                len_counter = 0
+                if TRAIN_NUM <= counter < TRAIN_NUM + VAL_NUM:
+                    for one_time in t:
+                        if one_time[-1] % 10 == 1 and len_counter < 9+8:
+                            len_counter += 1
+                            f.write(f"{one_time[-1]} {counter} {one_time[0]} {one_time[1]}" + "\n")
+
+    f.close()
+    print(counter)
+    print(counter == VAL_NUM)
+
+
+def write_test_file(trajectories, test_file):
+    counter = 0
+    with open(test_file, "w") as f:
+        for t in trajectories:
+            if len(t) > (9+8) * 10:
+                counter += 1
+                len_counter = 0
+                if counter > TRAIN_NUM + VAL_NUM:
+                    for one_time in t:
+                        if one_time[-1] % 10 == 1 and len_counter < 9+8:
+                            len_counter += 1
+                            f.write(f"{one_time[-1]} {counter} {one_time[0]} {one_time[1]}" + "\n")
+
+    f.close()
+    print(counter)
+    print(counter == LEN_17_NUM)
+
+
 traj = mat_to_trajectories('trajectoriesNew.mat')
-print(len(traj))
-print(traj[1])
-write_to_file(traj, out_file="cs_train.txt")
+# write_to_file(traj, out_file="cs_train.txt")
+write_val_file(traj, val_file="cs_val.txt")
+write_test_file(traj, test_file="cs_test.txt")
 # data = process(mat_to_trajectories('trajectoriesNew.mat'))
 # print(np.shape(data))
 # np.save('data_NYGC_p16_time.npy', data)
