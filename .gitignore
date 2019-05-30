@@ -19,3 +19,5 @@ __pycache__/
 nygc_data/validation/trajectories_val\.cpkl
 
 nygc_data/train/trajectories_train\.cpkl
+
+data/train/trajectories_train\.cpkl

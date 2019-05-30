@@ -26,9 +26,9 @@ def main():
     parser.add_argument('--batch_size', type=int, default=5,
                         help='minibatch size')
     # Length of sequence to be considered parameter
-    parser.add_argument('--seq_length', type=int, default=17,
+    parser.add_argument('--seq_length', type=int, default=20,
                         help='RNN sequence length')
-    parser.add_argument('--pred_length', type=int, default=8,
+    parser.add_argument('--pred_length', type=int, default=12,
                         help='prediction length')
     # Number of epochs parameter
     parser.add_argument('--num_epochs', type=int, default=30,
@@ -311,6 +311,7 @@ def train(args):
 
                 # Update parameters
                 optimizer.step()
+                print(f"batch {num_batch} epoch {epoch} finished")
 
             end = time.time()
             loss_batch = loss_batch / dataloader.batch_size
