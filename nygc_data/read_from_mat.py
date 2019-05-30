@@ -56,7 +56,7 @@ def write_to_file(trajectories, out_file):
     counter = 0
     with open(out_file, "w") as f:
         for t in trajectories:
-            if len(t) > (9+8) * 10 and counter < TRAIN_NUM:
+            if len(t) > (9+8) * 10 and counter < int(TRAIN_NUM / 9) - 1050:
                 counter += 1
                 len_counter = 0
                 for one_time in t:
@@ -106,9 +106,9 @@ def write_test_file(trajectories, test_file):
 
 
 traj = mat_to_trajectories('trajectoriesNew.mat')
-# write_to_file(traj, out_file="cs_train.txt")
-write_val_file(traj, val_file="cs_val.txt")
-write_test_file(traj, test_file="cs_test.txt")
+write_to_file(traj, out_file="cs_train.txt")
+# write_val_file(traj, val_file="cs_val.txt")
+# write_test_file(traj, test_file="cs_test.txt")
 # data = process(mat_to_trajectories('trajectoriesNew.mat'))
 # print(np.shape(data))
 # np.save('data_NYGC_p16_time.npy', data)

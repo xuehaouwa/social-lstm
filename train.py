@@ -311,6 +311,7 @@ def train(args):
 
                 # Update parameters
                 optimizer.step()
+                print(f"batch {num_batch} finished")
 
             end = time.time()
             loss_batch = loss_batch / dataloader.batch_size
