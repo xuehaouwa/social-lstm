@@ -593,6 +593,8 @@ class DataLoader():
     def get_file_name(self, offset=0, pointer_type='train'):
         # return file name of processing or pointing by dataset pointer
         if pointer_type is 'train':
+            print(f"aaaaaaaaaaaaaaaa {self.dataset_pointer}")
+            print(f"bbbbbbbbbbbbbbb {self.data_dirs}")
             return self.data_dirs[self.dataset_pointer + offset].split('/')[-1]
 
         elif pointer_type is 'valid':

@@ -316,6 +316,7 @@ def train(args):
             loss_batch = loss_batch / dataloader.batch_size
             loss_epoch += loss_batch
             num_batch += 1
+            print(f"epcoh {epoch} batch {num_batch} finished")
 
             # print('{}/{} (epoch {}), train_loss = {:.3f}, time/batch = {:.3f}'.format(
             #     epoch * dataloader.num_batches + batch,
